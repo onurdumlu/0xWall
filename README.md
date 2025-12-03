@@ -13,7 +13,7 @@
 
 **Siber tehditleri LLaMa-3 tabanlı yapay zeka ile analiz eden, Raspberry Pi üzerinde çalışan ve cerrahi engelleme yapan yeni nesil UTM (Unified Threat Management) çözümü.**
 
-[Özellikler](#-özellikler) • [Kurulum](#-kurulum) • [Kullanım](#-kullanım) • [Mimari](#-sistem-mimarisi) • [Ekran Görüntüleri](#-ekran-görüntüleri)
+[Özellikler](#-özellikler) • [Mimari](#-sistem-mimarisi) 
 
 </div>
 
@@ -33,7 +33,7 @@ Geleneksel güvenlik duvarları statik kurallarla çalışır. Bu proje ise ağ 
 * **📊 Gelişmiş Web Paneli (Dashboard):** * Canlı saldırı izleme ve loglama.
     * CPU, RAM ve Sıcaklık takibi.
     * IP Beyaz Liste (Whitelist) yönetimi.
-* **🌐 Web Filtreleme (Domain Blocking):** `google.com` gibi siteleri IP çözümlemesiyle engelleme.
+* **🌐 Web Filtreleme (Domain Blocking):** `zararlisite.com` gibi siteleri IP çözümlemesiyle engelleme.
 * **💻 Web Terminal & Lockdown:** Panel üzerinden komut satırı erişimi ve tek tuşla SSH kapatma (Kiosk Modu).
 * **🔐 Rol Tabanlı Yetkilendirme (RBAC):** Admin ve kısıtlı kullanıcı rolleri.
 
