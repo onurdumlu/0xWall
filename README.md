@@ -30,7 +30,8 @@ Geleneksel güvenlik duvarları statik kurallarla çalışır. Bu proje ise ağ 
 * **🧠 Yapay Zeka Destekli Analiz:** TShark ve Llama-3 modeli ile semantik trafik analizi.
 * **⚡ Gerçek Zamanlı Koruma:** 15 saniyelik periyotlarla tehdit avcılığı.
 * **🛡️ Cerrahi Engelleme:** Sadece saldırgan IP adresini hedef alan nokta atışı savunma.
-* **📊 Gelişmiş Web Paneli (Dashboard):** * Canlı saldırı izleme ve loglama.
+* **📊 Gelişmiş Web Paneli (Dashboard):**
+    * Canlı saldırı izleme ve loglama.
     * CPU, RAM ve Sıcaklık takibi.
     * IP Beyaz Liste (Whitelist) yönetimi.
 * **🌐 Web Filtreleme (Domain Blocking):** `zararlisite.com` gibi siteleri IP çözümlemesiyle engelleme.
