@@ -7,13 +7,13 @@
 [![Raspberry Pi](https://img.shields.io/badge/Hardware-Raspberry%20Pi%204-C51A4A?style=for-the-badge&logo=raspberry-pi&logoColor=white)](https://www.raspberrypi.org/)
 [![Google Colab](https://img.shields.io/badge/Cloud-Google%20Colab-F9AB00?style=for-the-badge&logo=google-colab&logoColor=white)](https://colab.research.google.com/)
 [![Streamlit](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey?style=for-the-badge)](LICENSE.md)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
 
 <br/>
 
 **Siber tehditleri LLaMa-3 tabanlı yapay zeka ile analiz eden, Raspberry Pi üzerinde çalışan ve cerrahi engelleme yapan yeni nesil UTM (Unified Threat Management) çözümü.**
 
-[Özellikler](#-özellikler) • [Mimari](#-sistem-mimarisi) 
+[Özellikler](#-özellikler) • [Mimari](#-sistem-mimarisi) • [Yasal Uyarı](#-yasal-uyarı)
 
 </div>
 
