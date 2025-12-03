@@ -24,7 +24,6 @@ DOMAIN_RULES_FILE = "domain_rules.json"
 if 'logged_in' not in st.session_state: st.session_state['logged_in'] = False
 if 'username' not in st.session_state: st.session_state['username'] = None
 if 'permissions' not in st.session_state: st.session_state['permissions'] = []
-# Terminal çıktılarını hafızada tutmak için
 if 'terminal_output' not in st.session_state: st.session_state['terminal_output'] = ""
 
 # ==============================================================================
@@ -57,7 +56,6 @@ def hash_password(password):
 def check_login(u, p):
     users = load_json(USERS_DB_FILE)
     if not users: 
-        # İlk kurulum: Admin'e 'terminal' yetkisi de verelim
         users = {"admin": {"password": hash_password("123456"), "permissions": ["all", "terminal"]}}
         save_json(USERS_DB_FILE, users)
     
@@ -76,53 +74,54 @@ def log_audit(action, details):
         f.write(f"[{ts}] [USER:{user}] [ACTION:{action}] -> {details}\n")
 
 # ==============================================================================
-# 3. FIREWALL & TERMİNAL FONKSİYONLARI
+# 3. FIREWALL, SSH & VNC YÖNETİMİ
 # ==============================================================================
 
 def execute_terminal_command(command):
-    """Web Terminalinden gelen komutu çalıştırır"""
-    # Güvenlik için bazı çok tehlikeli veya interaktif komutları engelleyebiliriz
     forbidden = ["nano", "vim", "top", "htop", "vi", "man", "less", "more"]
     cmd_base = command.split()[0] if command else ""
-    
     if cmd_base in forbidden:
         return f"HATA: '{cmd_base}' gibi interaktif komutlar web terminalinde çalıştırılamaz."
-
     try:
-        # Komutu çalıştır (stderr'i stdout'a yönlendir)
         result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=10)
         output = result.stdout
-        if result.stderr:
-            output += "\n[STDERR]\n" + result.stderr
-        
-        log_audit("TERMINAL_EXEC", f"Komut çalıştırıldı: {command}")
+        if result.stderr: output += "\n[STDERR]\n" + result.stderr
+        log_audit("TERMINAL_EXEC", f"Komut: {command}")
         return output
-    except subprocess.TimeoutExpired:
-        return "HATA: Komut zaman aşımına uğradı (10sn)."
-    except Exception as e:
-        return f"HATA: {str(e)}"
+    except Exception as e: return f"HATA: {str(e)}"
 
+# --- SSH YÖNETİMİ (PORT 22) ---
 def lockdown_ssh():
-    """Port 22'yi kapatır (Sadece Panel erişimi kalır)"""
     try:
-        # SSH portunu kapat (INPUT zincirine kural ekle)
         subprocess.run(["sudo", "iptables", "-A", "INPUT", "-p", "tcp", "--dport", "22", "-j", "DROP"], check=True)
-        log_audit("LOCKDOWN", "SSH (Port 22) erişimi kapatıldı.")
-        return True, "SSH erişimi başarıyla kapatıldı. Artık sadece panelden yönetebilirsiniz."
-    except Exception as e:
-        return False, str(e)
+        log_audit("LOCKDOWN_SSH", "SSH (Port 22) kapatıldı.")
+        return True, "SSH erişimi kapatıldı."
+    except Exception as e: return False, str(e)
 
 def unlock_ssh():
-    """Port 22'yi tekrar açar"""
     try:
-        # Kuralı sil
         subprocess.run(["sudo", "iptables", "-D", "INPUT", "-p", "tcp", "--dport", "22", "-j", "DROP"], check=True)
-        log_audit("UNLOCK_SSH", "SSH erişimi tekrar açıldı.")
+        log_audit("UNLOCK_SSH", "SSH erişimi açıldı.")
         return True, "SSH erişimi açıldı."
-    except Exception as e:
-        return False, str(e)
+    except Exception as e: return False, str(e)
 
-# (Eski fonksiyonlar aynen duruyor)
+# --- VNC YÖNETİMİ (PORT 5900 - YENİ EKLENDİ) ---
+def lockdown_vnc():
+    try:
+        # VNC Genelde 5900 portunu kullanır
+        subprocess.run(["sudo", "iptables", "-A", "INPUT", "-p", "tcp", "--dport", "5900", "-j", "DROP"], check=True)
+        log_audit("LOCKDOWN_VNC", "VNC (Port 5900) kapatıldı.")
+        return True, "VNC ekran paylaşımı kapatıldı."
+    except Exception as e: return False, str(e)
+
+def unlock_vnc():
+    try:
+        subprocess.run(["sudo", "iptables", "-D", "INPUT", "-p", "tcp", "--dport", "5900", "-j", "DROP"], check=True)
+        log_audit("UNLOCK_VNC", "VNC erişimi açıldı.")
+        return True, "VNC erişimi açıldı."
+    except Exception as e: return False, str(e)
+
+# --- FIREWALL FONKSİYONLARI ---
 def get_real_blocked_ips():
     try:
         res = subprocess.run(["sudo", "iptables", "-S", "FORWARD"], capture_output=True, text=True)
@@ -204,7 +203,7 @@ def main_app():
     st.caption(f"Yönetici: {st.session_state['username']}")
     st.divider()
 
-    tabs = st.tabs(["🖥️ Özet", "💻 Web Terminal (CMD)", "⛔ Gelen Tehditler", "🌐 Site Engelleme", "👥 Kullanıcılar"])
+    tabs = st.tabs(["🖥️ Özet", "💻 Web Terminal", "⛔ Gelen Tehditler", "🌐 Site Engelleme", "👥 Kullanıcılar"])
 
     # --- TAB 1: ÖZET ---
     with tabs[0]:
@@ -217,54 +216,65 @@ def main_app():
         
         st.markdown("---")
         
-        # LOCKDOWN MODU (SSH KAPATMA)
+        # LOCKDOWN MODU (SSH + VNC)
         st.subheader("🔒 Erişim Güvenliği (Lockdown)")
-        st.info("Eğer 'Panel Harici Erişimi Kapat' derseniz, SSH (Port 22) bağlantısı kesilir. Sadece bu web paneli çalışır.")
+        st.info("SSH (Terminal) ve VNC (Ekran Paylaşımı) bağlantılarını buradan yönetebilirsiniz.")
         
-        col_lock, col_unlock = st.columns(2)
-        with col_lock:
-            if st.button("🔒 PANEL HARİCİ ERİŞİMİ KAPAT (SSH DROP)", type="primary"):
+        # SSH YÖNETİMİ
+        st.markdown("**SSH Bağlantısı (Port 22)**")
+        col_ssh_lock, col_ssh_unlock = st.columns(2)
+        with col_ssh_lock:
+            if st.button("🔴 SSH KAPAT", use_container_width=True):
                 if has_permission("all"):
                     ok, msg = lockdown_ssh()
                     if ok: st.success(msg)
                     else: st.error(msg)
-                else: st.error("Yetkiniz yok.")
-        
-        with col_unlock:
-            if st.button("🔓 SSH ERİŞİMİNİ TEKRAR AÇ"):
+                else: st.error("Yetkisiz.")
+        with col_ssh_unlock:
+            if st.button("🟢 SSH AÇ", use_container_width=True):
                 if has_permission("all"):
                     ok, msg = unlock_ssh()
                     if ok: st.success(msg)
                     else: st.error(msg)
-                else: st.error("Yetkiniz yok.")
-
-    # --- TAB 2: WEB TERMINAL (YENİ) ---
-    with tabs[1]:
-        st.subheader("💻 Raspberry Pi Komut İstemi (Web Terminal)")
+                else: st.error("Yetkisiz.")
         
+        st.markdown("---")
+
+        # VNC YÖNETİMİ
+        st.markdown("**VNC Bağlantısı (Port 5900)**")
+        col_vnc_lock, col_vnc_unlock = st.columns(2)
+        with col_vnc_lock:
+            if st.button("🔴 VNC KAPAT", use_container_width=True):
+                if has_permission("all"):
+                    ok, msg = lockdown_vnc()
+                    if ok: st.success(msg)
+                    else: st.error(msg)
+                else: st.error("Yetkisiz.")
+        with col_vnc_unlock:
+            if st.button("🟢 VNC AÇ", use_container_width=True):
+                if has_permission("all"):
+                    ok, msg = unlock_vnc()
+                    if ok: st.success(msg)
+                    else: st.error(msg)
+                else: st.error("Yetkisiz.")
+
+    # --- TAB 2: WEB TERMINAL ---
+    with tabs[1]:
+        st.subheader("💻 Web Terminal")
         if has_permission("terminal") or has_permission("all"):
-            st.warning("⚠️ DİKKAT: Burada çalıştırılan komutlar 'root' yetkisiyle çalışır. Yanlış komut sistemi bozabilir.")
-            
-            # Komut Girişi
             with st.form("terminal_form"):
-                cmd_input = st.text_input("Komut (Örn: ls -la, ifconfig, cat /etc/hostname)", placeholder="Komutunuzu buraya yazın...")
+                cmd_input = st.text_input("Komut", placeholder="ls -la")
                 submitted = st.form_submit_button("Çalıştır")
-                
                 if submitted and cmd_input:
                     output = execute_terminal_command(cmd_input)
-                    # Çıktıyı session state'e ekle (log gibi biriksin)
                     st.session_state['terminal_output'] = f"$ {cmd_input}\n{output}\n" + "-"*50 + "\n" + st.session_state['terminal_output']
                     st.rerun()
 
-            # Terminal Ekranı (Siyah Arkaplan)
-            st.markdown("### Terminal Çıktısı")
             st.code(st.session_state['terminal_output'], language="bash")
-            
             if st.button("Ekranı Temizle"):
                 st.session_state['terminal_output'] = ""
                 st.rerun()
-        else:
-            st.error("⛔ Bu alana erişim yetkiniz yok.")
+        else: st.error("Erişim yok.")
 
     # --- TAB 3: SALDIRGAN YÖNETİMİ ---
     with tabs[2]:
@@ -285,7 +295,7 @@ def main_app():
 
     # --- TAB 4: SİTE ENGELLEME ---
     with tabs[3]:
-        dom = st.text_input("Engellenecek Site (Örn: youtube.com)")
+        dom = st.text_input("Engellenecek Site (Örn: tiktok.com)")
         if st.button("Siteyi Engelle"):
             if has_permission("block_ip"):
                 ok, msg = block_domain(dom)
@@ -310,7 +320,7 @@ def main_app():
             with st.form("add_usr"):
                 nu = st.text_input("Kullanıcı Adı")
                 np = st.text_input("Şifre", type="password")
-                term_perm = st.checkbox("Terminal Erişim Yetkisi Ver")
+                term_perm = st.checkbox("Terminal Erişim Yetkisi")
                 if st.form_submit_button("Ekle"):
                     if nu not in users:
                         perms = ["view_logs"]
