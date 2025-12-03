@@ -13,7 +13,7 @@
 
 **Siber tehditleri LLaMa-3 tabanlı yapay zeka ile analiz eden, Raspberry Pi üzerinde çalışan ve cerrahi engelleme yapan yeni nesil UTM (Unified Threat Management) çözümü.**
 
-[Özellikler](#-özellikler) • [Mimari](#-sistem-mimarisi) • [Yasal Uyarı](#-yasal-uyarı)
+[Özellikler](#-özellikler) • [Mimari](#-sistem-mimarisi)
 
 </div>
 
