@@ -1,18 +1,18 @@
-# License
+PROPRIETARY LICENSE / ALL RIGHTS RESERVED
 
-This project is licensed under the **Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)** license.
+Copyright (c) 2025 Onur Dumlu
 
-### You are free to:
+This software and its associated documentation files (the "Software") are the confidential and proprietary property of Onur Dumlu.
 
-* **Share** — copy and redistribute the material in any medium or format.
-* **Adapt** — remix, transform, and build upon the material.
+1. NO LICENSE GRANTED:
+   No license is granted to use, copy, modify, distribute, publish, sub-license, or sell copies of the Software.
 
-### Under the following terms:
+2. NON-COMMERCIAL & NO-DERIVATIVES:
+   The Software may not be used for any commercial purpose. Modification, reverse engineering, decompiling, or creating derivative works based on the Software is strictly prohibited.
 
-1.  **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
-2.  **NonCommercial** — You may **not** use the material for commercial purposes.
-3.  **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the **same license** as the original.
+3. RESTRICTED ACCESS:
+   The presence of this Software on a public repository (such as GitHub) does not imply a license to use it. You may view the code for educational or evaluation purposes only within the context of this repository.
 
----
-To view a full copy of this license, visit:
-http://creativecommons.org/licenses/by-nc-sa/4.0/
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
+
+VIOLATION OF THESE TERMS MAY RESULT IN LEGAL ACTION.
