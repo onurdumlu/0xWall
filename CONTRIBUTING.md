@@ -11,7 +11,7 @@ This project is **proprietary software** and is strictly maintained by the copyr
 * **We do NOT accept Feature Requests.** The roadmap is internal and private.
 * **Source Code is Read-Only.** This repository is hosted publicly solely for **portfolio and educational showcase purposes**.
 
-Attempting to modify, fork, or redistribute this code is a violation of the [LICENSE](LICENSE).
+Attempting to modify, fork, or redistribute this code is a violation of the [LICENSE](LICENSE.md).
 
 ---
 
@@ -21,4 +21,4 @@ Attempting to modify, fork, or redistribute this code is a violation of the [LIC
 
 Bu depo (repository) sadece portfolyo ve proje gösterimi amacıyla halka açık tutulmaktadır. Dışarıdan kod katkısı, "Pull Request" veya özellik isteği **kabul edilmemektedir**.
 
-Lütfen projenin yasal hakları için [LICENSE](LICENSE) dosyasına bakınız.
+Lütfen projenin yasal hakları için [LICENSE](LICENSE.md) dosyasına bakınız.
