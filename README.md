@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛡️ AI-Powered Hybrid Firewall (Edge-Cloud)
+# 🛡️ AI-Powered Hybrid Firewall (0xWall)
 ### Raspberry Pi & LLM Entegrasyonlu Akıllı Güvenlik Duvarı
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
