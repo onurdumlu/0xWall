@@ -20,7 +20,7 @@ from datetime import datetime
 
 # ==============================================================================
 
-# 1. AYARLAR VE VERÄ° YAPILARI
+# 1. AYARLAR VE VERÄ° YAPILARI test
 
 # ==============================================================================
 
@@ -805,4 +805,5 @@ def main_app():
 if st.session_state['logged_in']: main_app()
 
 else: login_screen()
+
 
